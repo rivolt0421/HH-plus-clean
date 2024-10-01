@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { SlotRepo, slotRepoToken } from './interface/slot.repository';
 import { Slot } from './slot';
+import { Transaction } from 'src/database/prisma.service';
 
 @Injectable()
 export class SlotService {
@@ -10,7 +11,7 @@ export class SlotService {
     const slot = await this.slotRepo.getById(slotId);
 
     if (!slot) {
-      throw Error('slot이 존재하지 않습니다.');
+      throw Error('특강이 존재하지 않습니다.');
     }
 
     return slot;
@@ -18,22 +19,24 @@ export class SlotService {
 
   async getAvailableSlots(): Promise<Slot[]> {
     const slots = await this.slotRepo.getAllSlots();
-    return slots.filter((s) => s.isAvailable());
+    return slots.filter((s) => s.remainingSeats > 0);
   }
 
-  async decreaseRemaingSeats(slotId: number): Promise<void> {
-    const slot = await this.slotRepo.getById(slotId);
+  async decreaseRemaingSeats(slotId: number, tx?: Transaction): Promise<void> {
+    const slot = await this.slotRepo.getById(slotId, tx);
 
     if (!slot) {
-      throw Error('slot이 존재하지 않습니다.');
+      throw Error('특강이 존재하지 않습니다.');
     }
 
-    const success = slot.decreaseRemainingSeats();
-
-    if (!success) {
-      throw Error('slot의 잔여석을 차감할 수 없습니다.');
+    if (slot.remainingSeats <= 0) {
+      throw Error('특강에 남은 좌석이 없습니다.');
     }
 
-    await this.slotRepo.save(slot);
+    const updatedSlot = await this.slotRepo.decreaseSafely(slotId, tx);
+
+    if (!updatedSlot) {
+      throw Error('남은 좌석이 없습니다.');
+    }
   }
 }
