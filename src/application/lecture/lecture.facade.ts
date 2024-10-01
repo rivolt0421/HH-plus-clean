@@ -16,8 +16,8 @@ export class LectureFacade {
   async doRegister(userId: number, slotId: number): Promise<boolean> {
     await this.prismaService.$transaction(async (tx) => {
       await this.slotService.decreaseRemaingSeats(slotId, tx);
+      await this.registerService.register(userId, slotId, tx);
     });
-    await this.registerService.register(userId, slotId);
 
     return true;
   }
