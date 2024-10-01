@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from '../../../app.module';
+import { AppModule } from '../../app.module';
 import {
   PostgreSqlContainer,
   StartedPostgreSqlContainer,
 } from '@testcontainers/postgresql';
-import { PrismaService } from '../../../database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 import { join } from 'path';
 import { execSync } from 'child_process';
 
@@ -150,7 +150,6 @@ async function setupTestData(prisma: PrismaService, DATABASE_URL: string) {
   // 데이터베이스 초기화
   const prismaBinary = join(
     __dirname,
-    '..',
     '..',
     '..',
     '..',

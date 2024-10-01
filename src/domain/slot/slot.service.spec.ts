@@ -1,6 +1,6 @@
-import { SlotRepo } from '../interface/slot.repository';
-import { Slot } from '../slot';
-import { SlotService } from '../slot.service';
+import { SlotRepo } from './interface/slot.repository';
+import { Slot } from './slot';
+import { SlotService } from './slot.service';
 
 describe('slot service 단위 테스트', () => {
   let slotService: SlotService;

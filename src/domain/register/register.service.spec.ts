@@ -1,6 +1,6 @@
-import { RegistrationRepo } from '../interface/registration.repository';
-import { Registration } from '../register';
-import { RegisterService } from '../register.service';
+import { RegistrationRepo } from './interface/registration.repository';
+import { Registration } from './register';
+import { RegisterService } from './register.service';
 
 describe('register service 단위 테스트', () => {
   let service: RegisterService;

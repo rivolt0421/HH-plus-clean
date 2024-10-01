@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { RegisterService } from '../domain/register/register.service';
-import { registrationRepoToken } from '../domain/register/interface/registration.repository';
+import { RegisterService } from 'src/domain/register/register.service';
+import { registrationRepoToken } from 'src/domain/register/interface/registration.repository';
 import { RegistrationRepoImpl } from 'src/infrastructure/persistence/register/registration.repository.impl';
 import { SlotService } from 'src/domain/slot/slot.service';
 import { slotRepoToken } from 'src/domain/slot/interface/slot.repository';
