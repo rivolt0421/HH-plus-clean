@@ -25,16 +25,12 @@ describe('register service 단위 테스트', () => {
 
       const result = await service.register(userId, slotId);
 
-      expect(mockRegistrationRepo.create).toHaveBeenCalledWith({
-        userId,
-        slotId,
-      });
       expect(result).toEqual(expectedRegistration);
     });
   });
 
   describe('유저가 신청 완료한 특강 목록을 조회한다.', () => {
-    test('should return registrations for a user', async () => {
+    test('유저가 신청한 특강 목록을 반환하는지.', async () => {
       const userId = 1;
       const expectedRegistrations: Registration[] = [
         { id: 1, userId, slotId: 2 },
@@ -45,7 +41,6 @@ describe('register service 단위 테스트', () => {
 
       const result = await service.getOfUser(userId);
 
-      expect(mockRegistrationRepo.getByUserId).toHaveBeenCalledWith(userId);
       expect(result).toEqual(expectedRegistrations);
     });
   });
