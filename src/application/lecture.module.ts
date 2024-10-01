@@ -6,8 +6,10 @@ import { SlotService } from 'src/domain/slot/slot.service';
 import { slotRepoToken } from 'src/domain/slot/interface/slot.repository';
 import { SlotRepoImpl } from 'src/infrastructure/persistence/slot/slot.repository.impl';
 import { LectureFacade } from './lecture.facade';
+import { LectureController } from 'src/api/lecture/lecture.controller';
 
 @Module({
+  controllers: [LectureController],
   providers: [
     LectureFacade,
     RegisterService,
