@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService, Transaction } from 'src/database/prisma.service';
 import { SlotRepo } from 'src/domain/slot/interface/slot.repository';
 import { Slot } from 'src/domain/slot/slot';
+import { SlotDecreaseFailedError } from 'src/domain/slot/slot.service';
 
 @Injectable()
 export class SlotRepoImpl implements SlotRepo {
@@ -34,7 +35,7 @@ export class SlotRepoImpl implements SlotRepo {
       .then((s) => new Slot(s.id, s.remaining_seats, s.title, s.speaker_name));
   }
 
-  async decreaseSafely(slotId: number, tx?: Transaction): Promise<Slot | null> {
+  async decreaseSafely(slotId: number, tx?: Transaction): Promise<Slot> {
     return (tx ?? this.prisma).slot
       .update({
         where: { id: slotId, remaining_seats: { gt: 0 } },
@@ -46,7 +47,7 @@ export class SlotRepoImpl implements SlotRepo {
       .catch((error) => {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
           if (error.code === this.prisma.errorCode.RECORD_NOT_FOUND) {
-            return null;
+            throw new SlotDecreaseFailedError();
           }
         }
         throw error;

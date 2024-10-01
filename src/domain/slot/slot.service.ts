@@ -33,10 +33,15 @@ export class SlotService {
       throw Error('특강에 남은 좌석이 없습니다.');
     }
 
-    const updatedSlot = await this.slotRepo.decreaseSafely(slotId, tx);
-
-    if (!updatedSlot) {
-      throw Error('남은 좌석이 없습니다.');
+    try {
+      await this.slotRepo.decreaseSafely(slotId, tx);
+    } catch (error) {
+      if (error instanceof SlotDecreaseFailedError) {
+        throw Error('남은 좌석이 없습니다.');
+      }
+      throw error;
     }
   }
 }
+
+export class SlotDecreaseFailedError extends Error {}

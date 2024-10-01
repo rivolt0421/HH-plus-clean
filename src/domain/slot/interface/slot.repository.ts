@@ -7,5 +7,5 @@ export interface SlotRepo {
   getAllSlots(tx?: Transaction): Promise<Slot[]>;
   getById(slotId: number, tx?: Transaction): Promise<Slot | null>;
   save(slot: Slot, tx?: Transaction): Promise<Slot>;
-  decreaseSafely(slotId: number, tx?: Transaction): Promise<Slot | null>;
+  decreaseSafely(slotId: number, tx?: Transaction): Promise<Slot>;
 }

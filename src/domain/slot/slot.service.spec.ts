@@ -1,6 +1,6 @@
 import { SlotRepo } from './interface/slot.repository';
 import { Slot } from './slot';
-import { SlotService } from './slot.service';
+import { SlotDecreaseFailedError, SlotService } from './slot.service';
 
 describe('slot service 단위 테스트', () => {
   let slotService: SlotService;
@@ -70,7 +70,9 @@ describe('slot service 단위 테스트', () => {
       const slot = new Slot(slotId, 10, 'slot1', '김구루');
 
       mockSlotRepo.getById.mockResolvedValue(slot);
-      mockSlotRepo.decreaseSafely.mockResolvedValue(null);
+      mockSlotRepo.decreaseSafely.mockRejectedValue(
+        new SlotDecreaseFailedError(),
+      );
 
       await expect(slotService.decreaseRemaingSeats(slotId)).rejects.toThrow(
         '남은 좌석이 없습니다.',
