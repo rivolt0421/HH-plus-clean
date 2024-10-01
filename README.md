@@ -1,73 +1,35 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+## 디렉토리 구조
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+---
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
+```text
+/src
+  /api              (controller, dto)
+  /application      (usecase)
+  /domain           (service, interface, test)
+  /infrastructure   (repository)
 ```
 
-## Running the app
+1. 설계의 단순함을 위해 기본적으로는 Layered Architecture 를 만족하도록,
 
-```bash
-# development
-$ npm run start
+    `Presentaion Layer` - api
+    `Business Layer` - application, domain
+    `Persistence Layer` - infrastructure
 
-# watch mode
-$ npm run start:dev
+    의 형태로 디렉토리를 구성했습니다.
+2. Clean Architecture 의 도메인 중심적인 구조와 항상 도메인으로 향하는 의존성 방향을 만족하기 위해 `Business Layer` 와 `Persistence Layer` 사이에 interface 와 implementation 를 구성했습니다. 이를 통해 `Business Layer` 에서 interface 를 정의하고 `Persistence Layer` 가 이를 의존하는 형태의 구성이 이루어지도록 했습니다.
 
-# production mode
-$ npm run start:prod
-```
+## 데이터베이스 테이블 설계
 
-## Test
+---
+![screenshot](public/diagram.png)
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+1. `user` (사용자)
+   - 사용자 정보를 저장하는 테이블입니다.
+2. `slot` (특강)
+   - 특강에 관한 정보를 저장하는 테이블입니다.
+   - `capacity` 가 최대 정원, `remaining_seats` 가 잔여석입니다.
+   - "특강 최대 정원"에 대한 동시성 제어를 위해 `remaining_seats` 컬럼을 추가했습니다.
+3. `registratioin` (신청)
+   - 사용자가 신청한 특강 정보를 저장하는 관계 테이블입니다.
+   - "사용자의 중복 신청 방지"에 대한 동시성 제어를 위해 `slot_id` 와 `user_id` 의 조합으로 unique key index 를 추가했습니다.
