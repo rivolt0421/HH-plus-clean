@@ -30,5 +30,7 @@ model registration {
   slot_id Int
   user user @relation(fields: [user_id], references: [id])
   slot slot @relation(fields: [slot_id], references: [id])
+
+  @@unique([user_id, slot_id])
 }
 
