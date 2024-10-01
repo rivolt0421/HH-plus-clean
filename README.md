@@ -1,7 +1,5 @@
 ## 디렉토리 구조
 
----
-
 ```text
 /src
   /api              (controller, dto)
@@ -13,15 +11,16 @@
 1. 설계의 단순함을 위해 기본적으로는 Layered Architecture 를 만족하도록,
 
     `Presentaion Layer` - api
+   
     `Business Layer` - application, domain
+   
     `Persistence Layer` - infrastructure
 
     의 형태로 디렉토리를 구성했습니다.
-2. Clean Architecture 의 도메인 중심적인 구조와 항상 도메인으로 향하는 의존성 방향을 만족하기 위해 `Business Layer` 와 `Persistence Layer` 사이에 interface 와 implementation 를 구성했습니다. 이를 통해 `Business Layer` 에서 interface 를 정의하고 `Persistence Layer` 가 이를 의존하는 형태의 구성이 이루어지도록 했습니다.
+3. Clean Architecture 의 도메인 중심적인 구조와 항상 도메인으로 향하는 의존성 방향을 만족하기 위해 `Business Layer` 와 `Persistence Layer` 사이에 interface 와 implementation 를 구성했습니다. 이를 통해 `Business Layer` 에서 interface 를 정의하고 `Persistence Layer` 가 이를 의존하는 형태의 구성이 이루어지도록 했습니다.
 
 ## 데이터베이스 테이블 설계
 
----
 ![screenshot](public/diagram.png)
 
 1. `user` (사용자)
