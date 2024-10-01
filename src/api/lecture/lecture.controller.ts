@@ -7,7 +7,7 @@ import {
   Post,
   ValidationPipe,
 } from '@nestjs/common';
-import { LectureFacade } from 'src/application/lecture.facade';
+import { LectureFacade } from 'src/application/lecture/lecture.facade';
 import { DoRegisterReq } from './dto/do-register.req';
 import { SlotDto } from './dto/get-available-slots.res';
 import { RegisteredDto } from './dto/get-registration.res';
@@ -33,7 +33,7 @@ export class LectureController {
     );
   }
 
-  @Post()
+  @Post('register')
   async doRegister(
     @Body(new ValidationPipe()) body: DoRegisterReq,
   ): Promise<boolean> {

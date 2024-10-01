@@ -1,27 +1,29 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
+import { Prisma } from '@prisma/client';
+import { PrismaService, Transaction } from 'src/database/prisma.service';
 import { SlotRepo } from 'src/domain/slot/interface/slot.repository';
 import { Slot } from 'src/domain/slot/slot';
+import { SlotDecreaseFailedError } from 'src/domain/slot/slot.service';
 
 @Injectable()
 export class SlotRepoImpl implements SlotRepo {
   constructor(private readonly prisma: PrismaService) {}
-  async getAllSlots(): Promise<Slot[]> {
-    return this.prisma.slot.findMany().then((result) => {
+  async getAllSlots(tx?: Transaction): Promise<Slot[]> {
+    return (tx ?? this.prisma).slot.findMany().then((result) => {
       return result.map(
         (s) => new Slot(s.id, s.remaining_seats, s.title, s.speaker_name),
       );
     });
   }
 
-  async getById(slotId: number): Promise<Slot | null> {
-    return this.prisma.slot
+  async getById(slotId: number, tx?: Transaction): Promise<Slot | null> {
+    return (tx ?? this.prisma).slot
       .findUnique({ where: { id: slotId } })
       .then((s) => new Slot(s.id, s.remaining_seats, s.title, s.speaker_name));
   }
 
-  async save(slot: Slot): Promise<Slot> {
-    return this.prisma.slot
+  async save(slot: Slot, tx?: Transaction): Promise<Slot> {
+    return (tx ?? this.prisma).slot
       .update({
         where: { id: slot.id },
         data: {
@@ -31,5 +33,24 @@ export class SlotRepoImpl implements SlotRepo {
         },
       })
       .then((s) => new Slot(s.id, s.remaining_seats, s.title, s.speaker_name));
+  }
+
+  async decreaseSafely(slotId: number, tx?: Transaction): Promise<Slot> {
+    return (tx ?? this.prisma).slot
+      .update({
+        where: { id: slotId, remaining_seats: { gt: 0 } },
+        data: {
+          remaining_seats: { decrement: 1 },
+        },
+      })
+      .then((s) => new Slot(s.id, s.remaining_seats, s.title, s.speaker_name))
+      .catch((error) => {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+          if (error.code === this.prisma.errorCode.RECORD_NOT_FOUND) {
+            throw new SlotDecreaseFailedError();
+          }
+        }
+        throw error;
+      });
   }
 }

@@ -21,8 +21,8 @@ async function main() {
     data: {
       title: 'JavaScript 기초',
       speaker_name: '김구루',
-      remaining_seats: 20,
-      capacity: 20,
+      remaining_seats: 30,
+      capacity: 30,
     },
   });
 
@@ -30,8 +30,8 @@ async function main() {
     data: {
       title: 'TypeScript 심화',
       speaker_name: '밥아저씨',
-      remaining_seats: 15,
-      capacity: 15,
+      remaining_seats: 30,
+      capacity: 30,
     },
   });
 
