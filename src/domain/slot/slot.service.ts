@@ -6,6 +6,16 @@ import { Slot } from './slot';
 export class SlotService {
   constructor(@Inject(slotRepoToken) private readonly slotRepo: SlotRepo) {}
 
+  async getById(slotId: number): Promise<Slot | null> {
+    const slot = await this.slotRepo.getById(slotId);
+
+    if (!slot) {
+      throw Error('slot이 존재하지 않습니다.');
+    }
+
+    return slot;
+  }
+
   async getAvailableSlots(): Promise<Slot[]> {
     const slots = await this.slotRepo.getAllSlots();
     return slots.filter((s) => s.isAvailable());

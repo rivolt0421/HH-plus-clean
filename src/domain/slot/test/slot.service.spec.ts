@@ -16,18 +16,28 @@ describe('slot service 단위 테스트', () => {
     slotService = new SlotService(mockSlotRepo);
   });
 
-  describe('신청 가능한 특강 목록을 조회한다.', () => {
-    test('신청 가능한 상태의 slot 만 반환된다.', async () => {
-      const availableSlot = new Slot(1, 10, 'slot1', '김구루');
-      const unavailableSlot = new Slot(2, 0, 'slot2', '이구루');
-      const slots: Slot[] = [availableSlot, unavailableSlot];
+  describe('id로 slot을 조회한다.', () => {
+    test('slot이 존재하지 않으면 에러 발생.', async () => {
+      const slotId = 1;
 
-      mockSlotRepo.getAllSlots.mockResolvedValue(slots);
+      mockSlotRepo.getById.mockResolvedValue(null);
 
-      const result = await slotService.getAvailableSlots();
-
-      expect(result).toEqual([availableSlot]);
+      await expect(slotService.getById(slotId)).rejects.toThrow(
+        'slot이 존재하지 않습니다.',
+      );
     });
+  });
+
+  test('신청 가능한 slot 목록을 조회한다.', async () => {
+    const availableSlot = new Slot(1, 10, 'slot1', '김구루');
+    const unavailableSlot = new Slot(2, 0, 'slot2', '이구루');
+    const slots: Slot[] = [availableSlot, unavailableSlot];
+
+    mockSlotRepo.getAllSlots.mockResolvedValue(slots);
+
+    const result = await slotService.getAvailableSlots();
+
+    expect(result).toEqual([availableSlot]);
   });
 
   describe('slot의 잔여석을 차감한다.', () => {
