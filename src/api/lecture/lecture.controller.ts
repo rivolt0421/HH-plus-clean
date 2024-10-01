@@ -33,7 +33,7 @@ export class LectureController {
     );
   }
 
-  @Post()
+  @Post('register')
   async doRegister(
     @Body(new ValidationPipe()) body: DoRegisterReq,
   ): Promise<boolean> {
